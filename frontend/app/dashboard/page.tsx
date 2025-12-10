@@ -2,15 +2,13 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { createWishlist, fetchMyWishlists, createShare } from '../../lib/wishlists';
+import { createWishlist, fetchMyWishlists } from '../../lib/wishlists';
 
 export default function DashboardPage() {
   const [wishlists, setWishlists] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [name, setName] = useState('');
   const [creating, setCreating] = useState(false);
-  const [sharingId, setSharingId] = useState<string | null>(null);
-  const [copiedId, setCopiedId] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -37,25 +35,6 @@ export default function DashboardPage() {
       console.error(err);
     } finally {
       setCreating(false);
-    }
-  };
-
-  const handleShare = async (wishlistId: string) => {
-    setSharingId(wishlistId);
-    try {
-      const res = await createShare(wishlistId, { is_claimable: true });
-      const token = res.token ?? wishlistId;
-      const origin = typeof window !== 'undefined' ? window.location.origin : '';
-      const url = `${origin}/public/${token}`;
-      await navigator.clipboard.writeText(url);
-      setCopiedId(wishlistId);
-      setTimeout(() => {
-        setCopiedId((current) => (current === wishlistId ? null : current));
-      }, 2000);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setSharingId(null);
     }
   };
 
@@ -95,14 +74,6 @@ export default function DashboardPage() {
               <Link href={`/wishlists/${wl.id}`} className="font-medium text-sky-400 hover:underline">
                 {wl.name}
               </Link>
-              <button
-                type="button"
-                onClick={() => handleShare(wl.id)}
-                disabled={sharingId === wl.id}
-                className="rounded border border-sky-600 px-2 py-1 text-xs font-medium text-sky-200 hover:bg-sky-600/20 disabled:opacity-60"
-              >
-                {copiedId === wl.id ? 'Link copied' : sharingId === wl.id ? 'Sharing…' : 'Share link'}
-              </button>
             </li>
           ))}
         </ul>
