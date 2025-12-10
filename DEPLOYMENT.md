@@ -110,11 +110,11 @@ This uses `docker/docker-compose.yml` to run **PostgreSQL**, **backend**, and **
 database_url: postgresql+asyncpg://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
 ```
 
-The frontend uses:
+The frontend uses (from the browser's point of view):
 ```yaml
-NEXT_PUBLIC_API_BASE_URL: http://backend:8000
+NEXT_PUBLIC_API_BASE_URL: http://localhost:${BACKEND_PORT:-8000}
 ```
-inside the Docker network.
+so that API calls go through the host port exposed for the backend.
 
 #### 2. Start services
 
