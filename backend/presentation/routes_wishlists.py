@@ -209,6 +209,8 @@ async def update_item(
         description=item.description,
         link=item.link,
         priority=item.priority,
+        is_received=item.is_received,
+        received_note=item.received_note,
         created_at=item.created_at,
         updated_at=item.updated_at,
     )

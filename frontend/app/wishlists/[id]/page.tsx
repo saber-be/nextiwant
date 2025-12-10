@@ -14,6 +14,8 @@ export default function WishlistDetailPage() {
   const [note, setNote] = useState('');
   const [creating, setCreating] = useState(false);
   const [shareLink, setShareLink] = useState('');
+  const [editingNoteItemId, setEditingNoteItemId] = useState<string | null>(null);
+  const [noteDraft, setNoteDraft] = useState('');
 
   useEffect(() => {
     if (!id) return;
@@ -50,27 +52,16 @@ export default function WishlistDetailPage() {
     }
   };
 
-  const handleToggleReceived = async (item: any) => {
+  const updateItemReceived = async (item: any, isReceived: boolean, receivedNote: string | undefined) => {
     if (!id) return;
-    const nextReceived = !item.is_received;
-    let received_note = item.received_note ?? '';
-
-    if (nextReceived) {
-      const input = window.prompt('Add a note about this gift (optional):', received_note || '');
-      if (input === null) {
-        return; // user cancelled
-      }
-      received_note = input || '';
-    }
-
     try {
       const updated = await updateWishlistItem(item.id, {
         title: item.title,
         description: item.description ?? undefined,
         link: item.link ?? undefined,
         priority: item.priority ?? undefined,
-        is_received: nextReceived,
-        received_note: received_note || undefined,
+        is_received: isReceived,
+        received_note: receivedNote,
       });
       setWishlist((prev: any) => ({
         ...prev,
@@ -79,6 +70,21 @@ export default function WishlistDetailPage() {
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const handleStartReceived = (item: any) => {
+    setEditingNoteItemId(item.id);
+    setNoteDraft(item.received_note ?? '');
+  };
+
+  const handleConfirmReceived = async (item: any) => {
+    await updateItemReceived(item, true, noteDraft || undefined);
+    setEditingNoteItemId(null);
+    setNoteDraft('');
+  };
+
+  const handleMarkNotReceived = async (item: any) => {
+    await updateItemReceived(item, false, undefined);
   };
 
   const handleShare = async () => {
@@ -176,13 +182,45 @@ export default function WishlistDetailPage() {
                   </div>
                 )}
               </div>
-              <button
-                type="button"
-                onClick={() => handleToggleReceived(item)}
-                className="rounded border border-emerald-500 px-2 py-1 text-xs font-medium text-emerald-300 hover:bg-emerald-500/10"
-              >
-                {item.is_received ? 'Mark as not received' : 'Mark as received'}
-              </button>
+              <div className="flex flex-col items-end gap-2">
+                <button
+                  type="button"
+                  onClick={() => (item.is_received ? handleMarkNotReceived(item) : handleStartReceived(item))}
+                  className="rounded border border-emerald-500 px-2 py-1 text-xs font-medium text-emerald-300 hover:bg-emerald-500/10"
+                >
+                  {item.is_received ? 'Mark as not received' : 'Mark as received'}
+                </button>
+                {editingNoteItemId === item.id && !item.is_received && (
+                  <div className="w-full min-w-[220px] rounded border border-slate-700 bg-slate-950 px-2 py-2 text-xs">
+                    <textarea
+                      className="w-full rounded border border-slate-700 bg-slate-900 px-2 py-1 text-xs mb-1"
+                      rows={2}
+                      placeholder="Add a note about this gift (optional)"
+                      value={noteDraft}
+                      onChange={(e) => setNoteDraft(e.target.value)}
+                    />
+                    <div className="flex justify-end gap-2">
+                      <button
+                        type="button"
+                        className="rounded px-2 py-1 text-xs text-slate-300 hover:text-slate-100"
+                        onClick={() => {
+                          setEditingNoteItemId(null);
+                          setNoteDraft('');
+                        }}
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="button"
+                        className="rounded bg-emerald-600 px-2 py-1 text-xs font-semibold text-white hover:bg-emerald-500"
+                        onClick={() => handleConfirmReceived(item)}
+                      >
+                        Save
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </li>
         ))}

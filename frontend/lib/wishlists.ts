@@ -97,10 +97,3 @@ export async function createShare(wishlistId: string, payload: { is_claimable: b
   });
   return res.data;
 }
-
-export async function claimWishlist(token: string) {
-  const res = await api.post(`/api/public/${token}/claim`, null, {
-    headers: authHeaders(),
-  });
-  return res.data;
-}

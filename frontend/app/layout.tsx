@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import './globals.css';
 import { Header } from '../components/Header';
+import { LanguageProvider } from '../components/LanguageProvider';
 
 export const metadata = {
   title: 'iliketohave',
@@ -16,8 +17,10 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <meta name="theme-color" content="#0ea5e9" />
       </head>
       <body>
-        <Header />
-        <main>{children}</main>
+        <LanguageProvider>
+          <Header />
+          <main>{children}</main>
+        </LanguageProvider>
       </body>
     </html>
   );
