@@ -89,6 +89,21 @@ const resources = {
       itemWizardErrorNameRequired: 'Please enter a name for this item.',
       itemWizardErrorGeneric:
         'Something went wrong while adding this item. Please try again.',
+
+      // Inline add-item form
+      itemFormTitlePlaceholder: 'Item title',
+      itemFormUrlPlaceholder: 'URL (optional)',
+      itemFormNotePlaceholder: 'Note (optional)',
+      itemFormAdd: 'Add item',
+      itemFormAdding: 'Adding…',
+
+      // Item received states
+      itemReceivedDefaultNote: 'This item has been received as a gift.',
+      itemReceivedToggleReceived: 'Mark as received',
+      itemReceivedToggleNotReceived: 'Mark as not received',
+      itemReceivedNotePlaceholder: 'Add a note about this gift (optional)',
+      itemReceivedCancel: 'Cancel',
+      itemReceivedSave: 'Save',
     },
   },
   fa: {
@@ -180,6 +195,21 @@ const resources = {
       itemWizardErrorNameRequired: 'لطفاً برای این آیتم یک نام وارد کن.',
       itemWizardErrorGeneric:
         'در افزودن این آیتم خطایی رخ داد. لطفاً دوباره تلاش کن.',
+
+      // Inline add-item form
+      itemFormTitlePlaceholder: 'عنوان آیتم',
+      itemFormUrlPlaceholder: 'آدرس (اختیاری)',
+      itemFormNotePlaceholder: 'توضیح (اختیاری)',
+      itemFormAdd: 'افزودن آیتم',
+      itemFormAdding: 'در حال افزودن…',
+
+      // Item received states
+      itemReceivedDefaultNote: 'این آیتم به‌عنوان هدیه دریافت شده است.',
+      itemReceivedToggleReceived: 'علامت به‌عنوان دریافت‌شده',
+      itemReceivedToggleNotReceived: 'برداشتن علامت دریافت‌شده',
+      itemReceivedNotePlaceholder: 'یادداشت درباره این هدیه (اختیاری)',
+      itemReceivedCancel: 'انصراف',
+      itemReceivedSave: 'ذخیره',
     },
   },
 };

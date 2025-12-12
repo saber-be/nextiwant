@@ -313,20 +313,20 @@ export default function WishlistDetailPage() {
         <div className="flex gap-2">
           <input
             className="flex-1 rounded border border-sky-200 bg-white px-3 py-2 text-sm"
-            placeholder="Item title"
+            placeholder={t('itemFormTitlePlaceholder')}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
           />
         </div>
         <input
           className="w-full rounded border border-sky-200 bg-white px-3 py-2 text-sm"
-          placeholder="URL (optional)"
+          placeholder={t('itemFormUrlPlaceholder')}
           value={url}
           onChange={(e) => setUrl(e.target.value)}
         />
         <textarea
           className="w-full rounded border border-sky-200 bg-white px-3 py-2 text-sm"
-          placeholder="Note (optional)"
+          placeholder={t('itemFormNotePlaceholder')}
           rows={2}
           value={note}
           onChange={(e) => setNote(e.target.value)}
@@ -336,7 +336,7 @@ export default function WishlistDetailPage() {
           disabled={creating}
           className="rounded bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-500 disabled:opacity-60"
         >
-          {creating ? 'Adding…' : 'Add item'}
+          {creating ? t('itemFormAdding') : t('itemFormAdd')}
         </button>
       </form>
 
@@ -359,7 +359,7 @@ export default function WishlistDetailPage() {
                 )}
                 {item.is_received && (
                   <div className="text-xs text-emerald-400 mt-1">
-                    {item.received_note || 'This item has been received as a gift.'}
+                    {item.received_note || t('itemReceivedDefaultNote')}
                   </div>
                 )}
               </div>
@@ -369,14 +369,14 @@ export default function WishlistDetailPage() {
                   onClick={() => (item.is_received ? handleMarkNotReceived(item) : handleStartReceived(item))}
                   className="rounded border border-emerald-500 px-2 py-1 text-xs font-medium text-emerald-300 hover:bg-emerald-500/10"
                 >
-                  {item.is_received ? 'Mark as not received' : 'Mark as received'}
+                  {item.is_received ? t('itemReceivedToggleNotReceived') : t('itemReceivedToggleReceived')}
                 </button>
                 {editingNoteItemId === item.id && !item.is_received && (
                   <div className="w-full min-w-[220px] rounded border border-slate-600 bg-slate-950 px-2 py-2 text-xs text-slate-100">
                     <textarea
                       className="w-full rounded border border-slate-600 bg-slate-900 px-2 py-1 text-xs mb-1 text-slate-100 placeholder:text-slate-500 outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
                       rows={2}
-                      placeholder="Add a note about this gift (optional)"
+                      placeholder={t('itemReceivedNotePlaceholder')}
                       value={noteDraft}
                       onChange={(e) => setNoteDraft(e.target.value)}
                     />
@@ -389,14 +389,14 @@ export default function WishlistDetailPage() {
                           setNoteDraft('');
                         }}
                       >
-                        Cancel
+                        {t('itemReceivedCancel')}
                       </button>
                       <button
                         type="button"
                         className="rounded bg-emerald-600 px-2 py-1 text-xs font-semibold text-white hover:bg-emerald-500"
                         onClick={() => handleConfirmReceived(item)}
                       >
-                        Save
+                        {t('itemReceivedSave')}
                       </button>
                     </div>
                   </div>
