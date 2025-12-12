@@ -46,24 +46,41 @@ class User:
 @dataclass(slots=True)
 class UserProfile:
     user_id: UserId
-    name: str
+    username: Optional[str] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
     birthday: Optional[date] = None
     photo_url: Optional[str] = None
     created_at: datetime = field(default_factory=datetime.utcnow)
     updated_at: datetime = field(default_factory=datetime.utcnow)
 
+    @property
+    def name(self) -> str:
+        parts = [p for p in [self.first_name, self.last_name] if p]
+        if parts:
+            return " ".join(parts)
+        return self.username or ""
+
     def update_profile(
         self,
-        name: Optional[str] = None,
+        username: Optional[str] = None,
+        first_name: Optional[str] = None,
+        last_name: Optional[str] = None,
         birthday: Optional[date] = None,
         photo_url: Optional[str] = None,
     ) -> None:
         changed = False
 
-        if name is not None and name != self.name:
-            if not name.strip():
-                raise ValueError("Name cannot be empty")
-            self.name = name
+        if username is not None and username != self.username:
+            self.username = username or None
+            changed = True
+
+        if first_name is not None and first_name != self.first_name:
+            self.first_name = first_name or None
+            changed = True
+
+        if last_name is not None and last_name != self.last_name:
+            self.last_name = last_name or None
             changed = True
 
         if birthday is not None and birthday != self.birthday:

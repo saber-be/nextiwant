@@ -35,7 +35,9 @@ def _user_to_model(user: User, model: Optional[UserModel] = None) -> UserModel:
 def _profile_from_model(model: UserProfileModel) -> UserProfile:
     return UserProfile(
         user_id=UserId(value=model.user_id),
-        name=model.name,
+        username=model.username,
+        first_name=model.first_name,
+        last_name=model.last_name,
         birthday=model.birthday,
         photo_url=model.photo_url,
         created_at=model.created_at,
@@ -46,7 +48,9 @@ def _profile_from_model(model: UserProfileModel) -> UserProfile:
 def _profile_to_model(profile: UserProfile, model: Optional[UserProfileModel] = None) -> UserProfileModel:
     if model is None:
         model = UserProfileModel(user_id=profile.user_id.value)
-    model.name = profile.name
+    model.username = profile.username
+    model.first_name = profile.first_name
+    model.last_name = profile.last_name
     model.birthday = profile.birthday
     model.photo_url = profile.photo_url
     model.created_at = profile.created_at

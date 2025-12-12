@@ -41,6 +41,9 @@ class WishlistItemCommentCreateRequest(BaseModel):
 class UserProfileResponse(BaseModel):
     user_id: UUID
     name: str
+    username: Optional[str] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
     birthday: Optional[date] = None
     photo_url: Optional[str] = None
     created_at: datetime
@@ -48,7 +51,9 @@ class UserProfileResponse(BaseModel):
 
 
 class UserProfileUpdateRequest(BaseModel):
-    name: str = Field(..., min_length=1)
+    username: Optional[str] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
     birthday: Optional[date] = None
     photo_url: Optional[str] = None
 

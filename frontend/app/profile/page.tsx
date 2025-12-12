@@ -4,7 +4,9 @@ import { useEffect, useState } from 'react';
 import { fetchProfile, upsertProfile } from '../../lib/wishlists';
 
 export default function ProfilePage() {
-  const [name, setName] = useState('');
+  const [username, setUsername] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [birthday, setBirthday] = useState('');
   const [photoUrl, setPhotoUrl] = useState('');
   const [loading, setLoading] = useState(true);
@@ -16,7 +18,9 @@ export default function ProfilePage() {
       try {
         const profile = await fetchProfile();
         if (profile) {
-          setName(profile.name);
+          setUsername(profile.username ?? '');
+          setFirstName(profile.first_name ?? '');
+          setLastName(profile.last_name ?? '');
           setBirthday(profile.birthday ?? '');
           setPhotoUrl(profile.photo_url ?? '');
         }
@@ -32,7 +36,9 @@ export default function ProfilePage() {
     setMessage(null);
     try {
       await upsertProfile({
-        name,
+        username: username || null,
+        first_name: firstName || null,
+        last_name: lastName || null,
         birthday: birthday || null,
         photo_url: photoUrl || null,
       });
@@ -55,16 +61,39 @@ export default function ProfilePage() {
       {message && <p className="text-sm text-slate-600">{message}</p>}
       <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
         <div>
-          <label className="mb-1 block text-sm" htmlFor="name">
-            Name
+          <label className="mb-1 block text-sm" htmlFor="username">
+            Username
           </label>
           <input
-            id="name"
+            id="username"
             className="w-full rounded border border-sky-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
+        </div>
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <div>
+            <label className="mb-1 block text-sm" htmlFor="firstName">
+              First name
+            </label>
+            <input
+              id="firstName"
+              className="w-full rounded border border-sky-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-sm" htmlFor="lastName">
+              Last name
+            </label>
+            <input
+              id="lastName"
+              className="w-full rounded border border-sky-200 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
+          </div>
         </div>
         <div>
           <label className="mb-1 block text-sm" htmlFor="birthday">

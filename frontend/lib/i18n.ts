@@ -18,6 +18,12 @@ const resources = {
       dashboardEmpty:
         'No wishlists yet. A wishlist is a place to collect things you might want in the future. Click {{button}} above to create your first one.',
 
+      // Header navigation / auth
+      headerDashboard: 'Dashboard',
+      headerProfile: 'Profile',
+      headerLogout: 'Logout',
+      headerAuthCta: 'Sign in / Sign up',
+
       // Wizard titles / intro
       wizardTitleStep1: 'Step 1 of 3 - Give your wishlist a name',
       wizardTitleStep2: 'Step 2 of 3 - Add a short description (optional)',
@@ -101,6 +107,12 @@ const resources = {
       dashboardNewWishlist: 'لیست آرزوی جدید',
       dashboardEmpty:
         'هنوز هیچ لیست آرزویی نداری. لیست آرزو جاییه برای جمع کردن چیزهایی که ممکنه در آینده بخوای داشته باشی. برای ساخت اولین لیست، روی دکمه {{button}} بالا بزن.',
+
+      // Header navigation / auth
+      headerDashboard: 'داشبورد',
+      headerProfile: 'پروفایل',
+      headerLogout: 'خروج',
+      headerAuthCta: 'ورود / ثبت‌نام',
 
       // Wizard titles / intro
       wizardTitleStep1: 'قدم ۱ از ۳ - برای لیست آرزوت اسم بگذار',

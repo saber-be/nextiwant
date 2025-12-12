@@ -32,6 +32,9 @@ async def get_my_profile(
     return UserProfileResponse(
         user_id=profile.user_id.value,
         name=profile.name,
+        username=profile.username,
+        first_name=profile.first_name,
+        last_name=profile.last_name,
         birthday=profile.birthday,
         photo_url=profile.photo_url,
         created_at=profile.created_at,
@@ -49,7 +52,9 @@ async def upsert_my_profile(
     result = await use_case.execute(
         UpsertProfileCommand(
             user_id=current_user_id,
-            name=payload.name,
+            username=payload.username,
+            first_name=payload.first_name,
+            last_name=payload.last_name,
             birthday=payload.birthday,
             photo_url=payload.photo_url,
         )
@@ -58,6 +63,9 @@ async def upsert_my_profile(
     return UserProfileResponse(
         user_id=profile.user_id.value,
         name=profile.name,
+        username=profile.username,
+        first_name=profile.first_name,
+        last_name=profile.last_name,
         birthday=profile.birthday,
         photo_url=profile.photo_url,
         created_at=profile.created_at,

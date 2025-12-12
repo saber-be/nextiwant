@@ -31,7 +31,9 @@ class GetProfileUseCase:
 @dataclass(slots=True)
 class UpsertProfileCommand:
     user_id: UserId
-    name: str
+    username: Optional[str] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
     birthday: Optional[date] = None
     photo_url: Optional[str] = None
 
@@ -51,14 +53,18 @@ class UpsertProfileUseCase:
             if profile is None:
                 profile = UserProfile(
                     user_id=cmd.user_id,
-                    name=cmd.name,
+                    username=cmd.username,
+                    first_name=cmd.first_name,
+                    last_name=cmd.last_name,
                     birthday=cmd.birthday,
                     photo_url=cmd.photo_url,
                 )
                 await uow.profiles.add(profile)
             else:
                 profile.update_profile(
-                    name=cmd.name,
+                    username=cmd.username,
+                    first_name=cmd.first_name,
+                    last_name=cmd.last_name,
                     birthday=cmd.birthday,
                     photo_url=cmd.photo_url,
                 )

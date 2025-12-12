@@ -20,6 +20,7 @@ from backend.presentation.schemas import (
     PublicShareResponse,
     PublicUserProfileResponse,
     PublicWishlistResponse,
+    UserProfileResponse,
     WishlistItemCommentCreateRequest,
     WishlistItemCommentResponse,
     WishlistResponse,
@@ -273,11 +274,14 @@ async def get_public_user_profile(
 ) -> PublicUserProfileResponse:
     uid = UserId(value=user_id)
 
-    # Load profile (required for public page)
+    # Load profile if it exists; otherwise fall back to base User entity
     async with users_uow as uuow:
         profile = await uuow.profiles.get_by_user_id(uid)
+        user = None
         if profile is None:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Profile not found")
+            user = await uuow.users.get_by_id(uid)
+            if user is None:
+                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
     # Load all wishlists and keep only public ones
     from backend.application.wishlists.use_cases import ListUserWishlistsQuery, ListUserWishlistsUseCase
@@ -288,15 +292,36 @@ async def get_public_user_profile(
 
     public_wishlists = [w for w in result.wishlists if w.visibility == WishlistVisibility.PUBLIC]
 
-    profile_response = PublicUserProfileResponse(
-        profile=UserProfileResponse(
+    # Build profile response from either a real profile or a fallback user
+    if profile is not None:
+        profile_data = UserProfileResponse(
             user_id=profile.user_id.value,
             name=profile.name,
+            username=profile.username,
+            first_name=profile.first_name,
+            last_name=profile.last_name,
             birthday=profile.birthday,
             photo_url=profile.photo_url,
             created_at=profile.created_at,
             updated_at=profile.updated_at,
-        ),
+        )
+    else:
+        assert user is not None
+        # Derive a display name from email if no profile exists
+        display_name = user.email.split("@")[0] if "@" in user.email else user.email
+        profile_data = UserProfileResponse(
+            user_id=user.id.value,
+            name=display_name,
+            username=None,
+            first_name=None,
+            last_name=None,
+            birthday=None,
+            photo_url=None,
+            created_at=user.created_at,
+            updated_at=user.updated_at,
+        )
+
+    return PublicUserProfileResponse(
+        profile=profile_data,
         wishlists=[_wishlist_to_response(w) for w in public_wishlists],
     )
-    return profile_response

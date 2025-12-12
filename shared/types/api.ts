@@ -28,6 +28,9 @@ export interface WishlistItemCommentResponse {
 export interface UserProfileResponse {
   user_id: UUID;
   name: string;
+  username?: string | null;
+  first_name?: string | null;
+  last_name?: string | null;
   birthday?: string | null;
   photo_url?: string | null;
   created_at: string;
@@ -35,7 +38,9 @@ export interface UserProfileResponse {
 }
 
 export interface UserProfileUpdateRequest {
-  name: string;
+  username?: string | null;
+  first_name?: string | null;
+  last_name?: string | null;
   birthday?: string | null;
   photo_url?: string | null;
 }

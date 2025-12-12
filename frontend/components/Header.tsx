@@ -66,12 +66,20 @@ export function Header() {
           </div>
           <div className="flex items-center gap-3">
             {isAuthenticated && (
-              <Link
-                href="/dashboard"
-                className="text-sm font-medium text-slate-700 hover:text-sky-600"
-              >
-                Dashboard
-              </Link>
+              <>
+                <Link
+                  href="/dashboard"
+                  className="text-sm font-medium text-slate-700 hover:text-sky-600"
+                >
+                  {t('headerDashboard')}
+                </Link>
+                <Link
+                  href="/profile"
+                  className="text-sm font-medium text-slate-700 hover:text-sky-600"
+                >
+                  {t('headerProfile')}
+                </Link>
+              </>
             )}
             {isAuthenticated ? (
               <button
@@ -79,7 +87,7 @@ export function Header() {
                 onClick={handleLogout}
                 className="rounded-md border border-sky-200 px-3 py-1 text-sm text-slate-700 hover:bg-sky-50"
               >
-                Logout
+                {t('headerLogout')}
               </button>
             ) : (
               <button
@@ -87,7 +95,7 @@ export function Header() {
                 onClick={() => setAuthOpen(true)}
                 className="rounded-md bg-sky-600 px-3 py-1 text-sm font-medium text-white hover:bg-sky-500"
               >
-                Sign in / Sign up
+                {t('headerAuthCta')}
               </button>
             )}
           </div>
