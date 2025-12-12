@@ -181,10 +181,20 @@ export default function WishlistDetailPage() {
           <button
             type="button"
             onClick={handleShare}
-            className="rounded bg-sky-600 px-3 py-1 text-sm font-semibold text-white hover:bg-sky-500"
+            className="rounded bg-sky-600 px-3 py-1 text-sm font-semibold text-white hover:bg-sky-500 disabled:opacity-60"
+            disabled={!!shareLink}
           >
-            Share
+            {shareLink ? 'Public link active' : 'Share'}
           </button>
+          {shareLink && (
+            <button
+              type="button"
+              onClick={() => setShareLink('')}
+              className="rounded border border-slate-300 px-3 py-1 text-sm font-semibold text-slate-700 hover:bg-slate-100"
+            >
+              Make private
+            </button>
+          )}
         </div>
       </div>
 
