@@ -18,6 +18,7 @@ from backend.presentation.dependencies import get_current_user_id, get_users_uow
 from backend.presentation.schemas import (
     PublicShareCreateRequest,
     PublicShareResponse,
+    PublicUserProfileResponse,
     PublicWishlistResponse,
     WishlistItemCommentCreateRequest,
     WishlistItemCommentResponse,
@@ -99,6 +100,7 @@ async def get_public_wishlist(
 async def list_public_wishlist_comments(
     token: str,
     uow: SqlAlchemyWishlistsUnitOfWork = Depends(get_wishlists_uow),
+    users_uow: SqlAlchemyUsersUnitOfWork = Depends(get_users_uow),
 ) -> list[WishlistItemCommentResponse]:
     use_case = GetPublicWishlistUseCase(uow=uow)
     result = await use_case.execute(GetPublicWishlistQuery(token=token))
@@ -111,8 +113,22 @@ async def list_public_wishlist_comments(
     async with uow as wuow:
         comments = await wuow.comments.list_by_item_ids(item_ids)
 
+    # Resolve commenter names from profiles (best-effort)
+    user_names: dict[str, str | None] = {}
+    try:
+        async with users_uow as uuow:
+            for c in comments:
+                uid = str(c.user_id.value)
+                if uid in user_names:
+                    continue
+                profile = await uuow.profiles.get_by_user_id(UserId(value=c.user_id.value))
+                user_names[uid] = profile.name if profile is not None else None
+    except Exception:
+        user_names = {}
+
     responses: list[WishlistItemCommentResponse] = []
     for c in comments:
+        uid = str(c.user_id.value)
         responses.append(
             WishlistItemCommentResponse(
                 id=c.id.value,
@@ -122,6 +138,7 @@ async def list_public_wishlist_comments(
                 content=c.content,
                 created_at=c.created_at,
                 updated_at=c.updated_at,
+                user_name=user_names.get(uid),
             )
         )
     return responses
@@ -170,6 +187,17 @@ async def create_public_item_comment(
         )
         await wuow.comments.add(comment)
 
+    # Try to resolve current user's profile name; ignore failures
+    user_name: str | None = None
+    try:
+        users_uow = SqlAlchemyUsersUnitOfWork(uow._session)  # type: ignore[attr-defined]
+        async with users_uow as uuow:
+            profile = await uuow.profiles.get_by_user_id(current_user_id)
+            if profile is not None:
+                user_name = profile.name
+    except Exception:
+        user_name = None
+
     return WishlistItemCommentResponse(
         id=comment.id.value,
         item_id=comment.item_id.value,
@@ -178,6 +206,7 @@ async def create_public_item_comment(
         content=comment.content,
         created_at=comment.created_at,
         updated_at=comment.updated_at,
+        user_name=user_name,
     )
 
 
@@ -213,6 +242,17 @@ async def create_public_comment_reply(
         )
         await wuow.comments.add(reply)
 
+    # Try to resolve current user's profile name; ignore failures
+    user_name: str | None = None
+    try:
+        users_uow = SqlAlchemyUsersUnitOfWork(uow._session)  # type: ignore[attr-defined]
+        async with users_uow as uuow:
+            profile = await uuow.profiles.get_by_user_id(current_user_id)
+            if profile is not None:
+                user_name = profile.name
+    except Exception:
+        user_name = None
+
     return WishlistItemCommentResponse(
         id=reply.id.value,
         item_id=reply.item_id.value,
@@ -221,4 +261,42 @@ async def create_public_comment_reply(
         content=reply.content,
         created_at=reply.created_at,
         updated_at=reply.updated_at,
+        user_name=user_name,
     )
+
+
+@router.get("/users/{user_id}", response_model=PublicUserProfileResponse)
+async def get_public_user_profile(
+    user_id: str,
+    users_uow: SqlAlchemyUsersUnitOfWork = Depends(get_users_uow),
+    wishlists_uow: SqlAlchemyWishlistsUnitOfWork = Depends(get_wishlists_uow),
+) -> PublicUserProfileResponse:
+    uid = UserId(value=user_id)
+
+    # Load profile (required for public page)
+    async with users_uow as uuow:
+        profile = await uuow.profiles.get_by_user_id(uid)
+        if profile is None:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Profile not found")
+
+    # Load all wishlists and keep only public ones
+    from backend.application.wishlists.use_cases import ListUserWishlistsQuery, ListUserWishlistsUseCase
+
+    use_case = ListUserWishlistsUseCase(uow=wishlists_uow)
+    result = await use_case.execute(ListUserWishlistsQuery(owner_id=uid))
+    from backend.domain.wishlists.entities import WishlistVisibility
+
+    public_wishlists = [w for w in result.wishlists if w.visibility == WishlistVisibility.PUBLIC]
+
+    profile_response = PublicUserProfileResponse(
+        profile=UserProfileResponse(
+            user_id=profile.user_id.value,
+            name=profile.name,
+            birthday=profile.birthday,
+            photo_url=profile.photo_url,
+            created_at=profile.created_at,
+            updated_at=profile.updated_at,
+        ),
+        wishlists=[_wishlist_to_response(w) for w in public_wishlists],
+    )
+    return profile_response

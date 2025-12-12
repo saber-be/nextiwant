@@ -1,6 +1,7 @@
 import { api } from './api';
 import type {
   PublicWishlistResponse,
+  PublicUserProfileResponse,
   UserProfileResponse,
   UserProfileUpdateRequest,
   WishlistItemResponse,
@@ -115,5 +116,10 @@ export async function createShare(wishlistId: string, payload: { is_claimable: b
   const res = await api.post(`/api/public/wishlists/${wishlistId}/share`, payload, {
     headers: authHeaders(),
   });
+  return res.data;
+}
+
+export async function fetchPublicUserProfile(userId: string): Promise<PublicUserProfileResponse> {
+  const res = await api.get<PublicUserProfileResponse>(`/api/public/users/${userId}`);
   return res.data;
 }

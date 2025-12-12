@@ -22,6 +22,7 @@ export interface WishlistItemCommentResponse {
   content: string;
   created_at: string;
   updated_at: string;
+  user_name?: string | null;
 }
 
 export interface UserProfileResponse {
@@ -77,4 +78,9 @@ export interface PublicWishlistResponse {
   wishlist: WishlistResponse | null;
   share: PublicShareResponse | null;
   owner_name?: string | null;
+}
+
+export interface PublicUserProfileResponse {
+  profile: UserProfileResponse;
+  wishlists: WishlistResponse[];
 }

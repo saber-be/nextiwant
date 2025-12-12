@@ -31,6 +31,7 @@ class WishlistItemCommentResponse(BaseModel):
     content: str
     created_at: datetime
     updated_at: datetime
+    user_name: Optional[str] = None
 
 
 class WishlistItemCommentCreateRequest(BaseModel):
@@ -123,3 +124,8 @@ class PublicWishlistResponse(BaseModel):
     wishlist: Optional[WishlistResponse]
     share: Optional[PublicShareResponse]
     owner_name: Optional[str] = None
+
+
+class PublicUserProfileResponse(BaseModel):
+    profile: UserProfileResponse
+    wishlists: list[WishlistResponse]

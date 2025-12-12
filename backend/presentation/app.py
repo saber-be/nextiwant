@@ -42,7 +42,7 @@ def create_app() -> FastAPI:
     )
 
     app = FastAPI(
-        title="iliketohave API",
+        title="ILikeToHave API",
         version="1.0.0",
         description="Backend API for iliketohave.com wishlist PWA",
     )

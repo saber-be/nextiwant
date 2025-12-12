@@ -1,5 +1,6 @@
 "use client";
 
+import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { fetchPublicWishlist, fetchPublicWishlistComments, createPublicItemComment, createPublicCommentReply } from '../../../lib/wishlists';
@@ -166,7 +167,15 @@ export default function PublicWishlistPage() {
                 <div key={c.id} className="text-xs space-y-1">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <div className="font-medium text-slate-100">Comment</div>
+                      <div className="font-medium text-slate-100">
+                        <span className="text-slate-400 mr-1">Comment by</span>
+                        <Link
+                          href={`/users/${c.user_id}`}
+                          className="text-sky-400 hover:underline"
+                        >
+                          {c.user_name ?? 'Someone'}
+                        </Link>
+                      </div>
                       <div className="text-slate-200 whitespace-pre-line">{c.content}</div>
                     </div>
                     {isAuthenticated && (
@@ -184,6 +193,15 @@ export default function PublicWishlistPage() {
                   </div>
                   {(entry.repliesByParent[c.id] ?? []).map((r) => (
                     <div key={r.id} className="ml-4 border-l border-slate-700 pl-2 text-slate-200 whitespace-pre-line">
+                      <div className="mb-0.5 text-[11px] text-slate-400">
+                        Reply by{' '}
+                        <Link
+                          href={`/users/${r.user_id}`}
+                          className="text-sky-400 hover:underline"
+                        >
+                          {r.user_name ?? 'Someone'}
+                        </Link>
+                      </div>
                       {r.content}
                     </div>
                   ))}

@@ -87,6 +87,9 @@ Steps:
 
 This uses `docker/docker-compose.yml` to run **PostgreSQL**, **backend**, and **frontend** together.
 
+- In dev, containers run with `APP_ENV=development`.
+- The backend and frontend entrypoint scripts use this to choose **reload/dev** behaviour.
+
 #### 1. Prepare environment
 
 1. Copy and edit the Docker env file:
@@ -126,25 +129,12 @@ docker compose up --build
 
 This will:
 - Start `db` (PostgreSQL 16)
-- Build and start `backend` using `docker/backend.Dockerfile`
-- Build and start `frontend` using `docker/frontend.Dockerfile` (runs `npm run dev`)
+- Build and start `backend` using `docker/backend.Dockerfile` with `APP_ENV=development` (runs `uvicorn` with `--reload`)
+- Build and start `frontend` using `docker/frontend.Dockerfile` with `APP_ENV=development` (runs `npm run dev` via `entrypoint.sh`)
 
 You can then access (using the host ports you configured):
 - Backend: `http://localhost:${BACKEND_PORT}` (default `8000`)
 - Frontend: `http://localhost:${FRONTEND_PORT}` (default `3000`)
-
-#### 3. Stop services
-
-```bash
-docker compose down
-```
-
-#### 4. Live code reload in Docker
-
-`docker-compose.yml` mounts your source directories:
-- `../backend` → `/app/backend`
-- `../frontend` → `/app/frontend`
-- `../shared` → `/app/shared`
 
 This allows you to edit code on the host and see changes inside containers (depending on FastAPI and Next.js reload settings, which are enabled via `--reload` and `npm run dev`).
 
@@ -152,9 +142,9 @@ This allows you to edit code on the host and see changes inside containers (depe
 
 ## 2. Live / Production Deployment
 
-There are many ways to run this in production; this section describes a **simple single-server Docker deployment** using the same Dockerfiles.
+There are many ways to run this in production; this section describes a **simple single-server Docker deployment** using the same Dockerfiles plus a small production overlay compose file.
 
-### Option 1: Single Server with Docker Compose
+### Option 1: Single Server with Docker Compose (using prod overlay)
 
 #### 1. Prepare a deployment server
 
@@ -206,13 +196,17 @@ Then Docker will expose:
 
 You may later choose to **only expose frontend publicly** and route backend through an internal network.
 
-#### 4. Build and run in detached mode
+#### 4. Build and run in detached mode (production settings)
 
-From the `docker/` directory on the server:
+From the `docker/` directory on the server, use the base compose file **plus** the production overlay:
 
 ```bash
-docker compose up --build -d
+docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d
 ```
+
+The overlay `docker-compose.prod.yml`:
+- Sets `APP_ENV=production` for backend and frontend.
+- Disables bind mounts for source code (containers run the code baked into images).
 
 - `-d` runs containers in the background.
 - Containers use the same `backend.Dockerfile` and `frontend.Dockerfile` as in dev.
@@ -278,12 +272,13 @@ This lets you:
 
 - **Dev with Docker**
   - From `docker/`: `docker compose up --build`
-  - Uses local bind mounts for fast iteration
+  - Uses local bind mounts for fast iteration with `APP_ENV=development`
 
 - **Live deployment (simple)**
   - Copy project to server
   - Configure strong secrets in `docker/.env`
-  - `docker compose up --build -d`
+  - From `docker/`: `docker compose -f docker-compose.yml -f docker-compose.prod.yml up --build -d`
+  - Runs backend and frontend with `APP_ENV=production` and no source bind mounts
   - Optionally front with a reverse proxy and TLS
 
 Adjust ports, domains, and environment variables as needed for your infrastructure and security policies.
