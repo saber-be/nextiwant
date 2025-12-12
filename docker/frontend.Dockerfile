@@ -8,5 +8,11 @@ RUN npm install
 
 EXPOSE 3000
 
-# Default dev command; you can override or run other tools (e.g. npx webpack -w) via docker compose exec.
-CMD ["npm", "run", "dev"]
+# Default environment; can be overridden at runtime (e.g. APP_ENV=production)
+ENV APP_ENV=development
+
+COPY frontend/entrypoint.sh ./
+RUN chmod +x entrypoint.sh
+
+# Default command delegates to entrypoint, which chooses dev or prod based on APP_ENV.
+CMD ["./entrypoint.sh"]

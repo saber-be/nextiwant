@@ -15,4 +15,9 @@ COPY backend ./backend
 
 ENV PYTHONPATH=/app
 
-CMD ["uvicorn", "backend.presentation.app:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# Default environment; can be overridden at runtime (e.g. APP_ENV=production)
+ENV APP_ENV=development
+
+RUN chmod +x backend/entrypoint.sh
+
+CMD ["backend/entrypoint.sh"]
