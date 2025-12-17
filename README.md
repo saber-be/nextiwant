@@ -1,4 +1,4 @@
-# ILikeToHave
+# NextIWant
 
 A full‑stack web application for creating and managing wishlists. Users can sign up, manage personal wishlists, browse public wishlists, and share their wishlists (each containing multiple items) with others.
 

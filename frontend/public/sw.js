@@ -1,4 +1,4 @@
-const CACHE_NAME = 'iliketohave-cache-v1';
+const CACHE_NAME = 'nextiwant-cache-v1';
 const OFFLINE_URLS = ['/', '/dashboard', '/profile'];
 
 self.addEventListener('install', (event) => {

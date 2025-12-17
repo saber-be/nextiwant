@@ -4,7 +4,7 @@ import { Header } from '../components/Header';
 import { LanguageProvider } from '../components/LanguageProvider';
 
 export const metadata = {
-  title: 'ILikeToHave',
+  title: 'NextIWant',
   description: 'Wishlist PWA',
   manifest: '/manifest.json',
 };

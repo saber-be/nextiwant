@@ -1,7 +1,7 @@
 import type { TokenResponse } from '../../shared/types/api';
 
-const ACCESS_TOKEN_KEY = 'iliketohave_access_token';
-const EXPIRES_AT_KEY = 'iliketohave_expires_at';
+const ACCESS_TOKEN_KEY = 'nextiwant_access_token';
+const EXPIRES_AT_KEY = 'nextiwant_expires_at';
 
 export function saveToken(token: TokenResponse, remember: boolean): void {
   if (typeof window === 'undefined') return;

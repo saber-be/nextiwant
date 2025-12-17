@@ -163,18 +163,18 @@ Typical approach:
 
 ```bash
 # On your local machine
-scp -r iliketohave USER@SERVER:/opt/iliketohave
+scp -r nextiwant USER@SERVER:/opt/nextiwant
 ```
 
 On the server, go to the project:
 
 ```bash
-cd /opt/iliketohave/docker
+cd /opt/nextiwant/docker
 ```
 
 #### 3. Configure production environment
 
-Edit `/opt/iliketohave/docker/.env` with **strong, non-dev values**:
+Edit `/opt/nextiwant/docker/.env` with **strong, non-dev values**:
 
 - `POSTGRES_USER`
 - `POSTGRES_PASSWORD`
@@ -242,18 +242,18 @@ If you prefer separate build and run stages (CI/CD), you can:
 
 1. **Build backend image**
    ```bash
-   docker build -t your-registry/iliketohave-backend:TAG -f docker/backend.Dockerfile .
+   docker build -t your-registry/nextiwant-backend:TAG -f docker/backend.Dockerfile .
    ```
 
 2. **Build frontend image**
    ```bash
-   docker build -t your-registry/iliketohave-frontend:TAG -f docker/frontend.Dockerfile .
+   docker build -t your-registry/nextiwant-frontend:TAG -f docker/frontend.Dockerfile .
    ```
 
 3. **Push images**
    ```bash
-   docker push your-registry/iliketohave-backend:TAG
-   docker push your-registry/iliketohave-frontend:TAG
+   docker push your-registry/nextiwant-backend:TAG
+   docker push your-registry/nextiwant-frontend:TAG
    ```
 
 4. **On the server**, use a `docker-compose.yml` (or Kubernetes manifest) that **pulls** these images instead of building from source.

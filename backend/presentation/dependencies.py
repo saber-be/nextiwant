@@ -21,7 +21,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "postgresql+asyncpg://iliketohave:iliketohave_password@db:5432/iliketohave",
+    "postgresql+asyncpg://nextiwant:nextiwant_password@db:5432/nextiwant",
 )
 
 engine = create_async_engine(DATABASE_URL, echo=False, future=True)

@@ -1,5 +1,5 @@
 {
-  "name": "iliketohave-frontend",
+  "name": "nextiwant-frontend",
   "private": true,
   "scripts": {
     "dev": "next dev",

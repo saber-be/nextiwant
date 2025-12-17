@@ -43,9 +43,9 @@ def create_app() -> FastAPI:
     )
 
     app = FastAPI(
-        title="ILikeToHave API",
+        title="NextIWant API",
         version="1.0.0",
-        description="Backend API for iliketohave.com wishlist PWA",
+        description="Backend API for nextiwant.com wishlist PWA",
     )
 
     allowed_origins_env = os.getenv("CORS_ALLOW_ORIGINS", "http://localhost:3000,like.chineshyar.com")
